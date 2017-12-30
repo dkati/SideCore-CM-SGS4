@@ -97,9 +97,10 @@ config.                 u:object_r:config_prop:s0
 ro.config.              u:object_r:config_prop:s0
 dalvik.                 u:object_r:dalvik_prop:s0
 ro.dalvik.              u:object_r:dalvik_prop:s0
-#line 1 "/home/side/android/cm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "device/qcom/sepolicy/common/property_contexts"
+# Copyright (c) 2014 - 2016, The Linux Foundation. All rights reserved.
 # Copyright (c) 2015-2016 Dolby Laboratories, Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -126,7 +127,6 @@ ro.dalvik.              u:object_r:dalvik_prop:s0
 
 wc_transport.              u:object_r:bluetooth_prop:s0
 sys.usb_uicc.              u:object_r:uicc_prop:s0
-dolby.audio.               u:object_r:audio_prop:s0
 persist.bluetooth.         u:object_r:bluetooth_prop:s0
 sys.ims.                   u:object_r:qcom_ims_prop:s0
 hw.fm.                     u:object_r:fm_prop:s0
@@ -186,6 +186,10 @@ ro.alarm_handled           u:object_r:alarm_handled_prop:s0
 ro.alarm_instance          u:object_r:alarm_instance_prop:s0
 #HWUI Property
 ro.hwui.texture_cache_size u:object_r:hwui_prop:s0
+#Bservice Property
+ro.sys.fw.bservice_ u:object_r:bservice_prop:s0
+#Delayed Service Restart Property
+ro.am.reschedule_service u:object_r:reschedule_service_prop:s0
 persist.graphics.vulkan.disable     u:object_r:graphics_vulkan_prop:s0
 #boot mode property
 sys.boot_mode              u:object_r:boot_mode_prop:s0
@@ -193,25 +197,25 @@ sys.boot_mode              u:object_r:boot_mode_prop:s0
 ro.gpu.available_frequencies u:object_r:freq_prop:s0
 # NFC
 sys.nfc.nq.                u:object_r:nfc_nq_prop:s0
-#line 1 "/home/side/android/cm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "device/qcom/sepolicy/msm8960/property_contexts"
 ctl.thermal-engine             u:object_r:ctl_thermal-engine_prop:s0
-#line 1 "/home/side/android/cm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "vendor/cm/sepolicy/qcom/property_contexts"
 persist.dbg                   u:object_r:radio_prop:s0
 persist.data                  u:object_r:radio_prop:s0
-#line 1 "/home/side/android/cm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "device/samsung/jf-common/sepolicy/property_contexts"
 persist.sys.camera.preview        u:object_r:camera_prop:s0
-#line 1 "/home/side/android/cm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "vendor/cm/sepolicy/property_contexts"
 adb.network.port              u:object_r:adbtcp_prop:s0
 recovery.perf.mode            u:object_r:recovery_prop:s0
 ro.adb.secure                 u:object_r:adbsecure_prop:s0
 cm.userinit.active            u:object_r:userinit_prop:s0
-#line 1 "/home/side/android/cm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 

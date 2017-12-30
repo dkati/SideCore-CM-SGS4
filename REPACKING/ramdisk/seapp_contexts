@@ -22,4 +22,3 @@ user=_app seinfo=platform name=com.qualcomm.location.qvtester domain=location_ap
 user=_app seinfo=platform name=com.qualcomm.qct.dlt domain=location_app type=location_app_data_file
 user=system seinfo=platform name=com.qualcomm.qti.auth.securesampleauthservice domain=qsee_svc_app type=qsee_svc_app_data_file
 user=system seinfo=platform name=com.qualcomm.qti.auth.secureextauthservice domain=qsee_svc_app type=qsee_svc_app_data_file
-user=_app seinfo=themeservice name=org.cyanogenmod.themeservice domain=themeservice_app type=themeservice_app_data_file
