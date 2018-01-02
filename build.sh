@@ -1,4 +1,4 @@
-VERSION_NUMBER=2.1
+VERSION_NUMBER=3.0
 build()
 {
 	echo "Copying toolchain..."
