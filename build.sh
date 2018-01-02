@@ -26,7 +26,7 @@ build()
 	
 	#Repacking
 	cd OUT
-	FILENAME=SideCore-SGS4-NOUGAT-${VERSION_NUMBER}-`date +"[%H-%M][%d-%m]"`.zip
+	FILENAME=SideCore-SGS4-NOUGAT-${VERSION_NUMBER}-`date +"[%H-%M][%d-%m-%y]"`.zip
 	zip -r $FILENAME .;
 	cd ..
 	
