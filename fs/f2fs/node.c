@@ -1426,6 +1426,7 @@ continue_unlock:
 			"Retry to write fsync mark: ino=%u, idx=%lx",
 					ino, last_page->index);
 		lock_page(last_page);
+		f2fs_wait_on_page_writeback(last_page, NODE, true);
 		set_page_dirty(last_page);
 		unlock_page(last_page);
 		goto retry;
@@ -1898,10 +1899,12 @@ retry:
 	if (time_to_inject(sbi, FAULT_ALLOC_NID))
 		return false;
 #endif
-	if (unlikely(sbi->total_valid_node_count + 1 > nm_i->available_nids))
-		return false;
-
 	spin_lock(&nm_i->nid_list_lock);
+
+	if (unlikely(nm_i->available_nids == 0)) {
+		spin_unlock(&nm_i->nid_list_lock);
+		return false;
+	}
 
 	/* We should not use stale free nids created by build_free_nids */
 	if (nm_i->nid_cnt[FREE_NID_LIST] && !on_build_free_nids(nm_i)) {
@@ -1913,6 +1916,7 @@ retry:
 		__remove_nid_from_list(sbi, i, FREE_NID_LIST, true);
 		i->state = NID_ALLOC;
 		__insert_nid_to_list(sbi, i, ALLOC_NID_LIST, false);
+		nm_i->available_nids--;
 		spin_unlock(&nm_i->nid_list_lock);
 		return true;
 	}
@@ -1964,6 +1968,10 @@ void alloc_nid_failed(struct f2fs_sb_info *sbi, nid_t nid)
 		i->state = NID_NEW;
 		__insert_nid_to_list(sbi, i, FREE_NID_LIST, false);
 	}
+
+
+	nm_i->available_nids++;
+
 	spin_unlock(&nm_i->nid_list_lock);
 
 	if (need_free)
@@ -2113,7 +2121,6 @@ int restore_node_summary(struct f2fs_sb_info *sbi,
 	struct f2fs_node *rn;
 	struct f2fs_summary *sum_entry;
 	block_t addr;
-	int bio_blocks = MAX_BIO_BLOCKS(sbi);
 	int i, idx, last_offset, nrpages;
 
 	/* scan the node segment */
@@ -2122,7 +2129,7 @@ int restore_node_summary(struct f2fs_sb_info *sbi,
 	sum_entry = &sum->entries[0];
 
 	for (i = 0; i < last_offset; i += nrpages, addr += nrpages) {
-		nrpages = min(last_offset - i, bio_blocks);
+		nrpages = min(last_offset - i, BIO_MAX_PAGES);
 
 		/* readahead node pages */
 		ra_meta_pages(sbi, addr, nrpages, META_POR, true);
@@ -2164,6 +2171,19 @@ static void remove_nats_in_journal(struct f2fs_sb_info *sbi)
 			ne = grab_nat_entry(nm_i, nid);
 			node_info_from_raw_nat(&ne->ni, &raw_ne);
 		}
+
+		/*
+		 * if a free nat in journal has not been used after last
+		 * checkpoint, we should remove it from available nids,
+		 * since later we will add it again.
+		 */
+		if (!get_nat_flag(ne, IS_DIRTY) &&
+				le32_to_cpu(raw_ne.block_addr) == NULL_ADDR) {
+			spin_lock(&nm_i->nid_list_lock);
+			nm_i->available_nids--;
+			spin_unlock(&nm_i->nid_list_lock);
+		}
+
 		__set_nat_cache_dirty(nm_i, ne);
 	}
 	update_nats_in_cursum(journal, -i);
@@ -2236,8 +2256,12 @@ static void __flush_nat_entry_set(struct f2fs_sb_info *sbi,
 		raw_nat_from_node_info(raw_ne, &ne->ni);
 		nat_reset_flag(ne);
 		__clear_nat_cache_dirty(NM_I(sbi), ne);
-		if (nat_get_blkaddr(ne) == NULL_ADDR)
+		if (nat_get_blkaddr(ne) == NULL_ADDR) {
 			add_free_nid(sbi, nid, false);
+			spin_lock(&NM_I(sbi)->nid_list_lock);
+			NM_I(sbi)->available_nids++;
+			spin_unlock(&NM_I(sbi)->nid_list_lock);
+		}
 	}
 
 	if (to_journal)
@@ -2312,7 +2336,9 @@ static int init_node_manager(struct f2fs_sb_info *sbi)
 	nm_i->max_nid = NAT_ENTRY_PER_BLOCK * nat_blocks;
 
 	/* not used nids: 0, node, meta, (and root counted as valid node) */
-	nm_i->available_nids = nm_i->max_nid - F2FS_RESERVED_NODE_NUM;
+
+	nm_i->available_nids = nm_i->max_nid - sbi->total_valid_node_count -
+							F2FS_RESERVED_NODE_NUM;
 	nm_i->nid_cnt[FREE_NID_LIST] = 0;
 	nm_i->nid_cnt[ALLOC_NID_LIST] = 0;
 	nm_i->nat_cnt = 0;

@@ -19,10 +19,11 @@
 
 #include <trace/events/f2fs.h>
 
-void f2fs_mark_inode_dirty_sync(struct inode *inode)
+void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
 {
-	if (f2fs_inode_dirtied(inode))
+	if (f2fs_inode_dirtied(inode, sync))
 		return;
+
 	mark_inode_dirty_sync(inode);
 }
 
@@ -43,7 +44,7 @@ void f2fs_set_inode_flags(struct inode *inode)
 		inode->i_flags |= S_NOATIME;
 	if (flags & FS_DIRSYNC_FL)
 		inode->i_flags |= S_DIRSYNC;
-	f2fs_mark_inode_dirty_sync(inode);
+	f2fs_mark_inode_dirty_sync(inode, false);
 }
 
 static void __get_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
@@ -338,7 +339,7 @@ int f2fs_write_inode(struct inode *inode, struct writeback_control *wbc)
 	 * We need to balance fs here to prevent from producing dirty node pages
 	 * during the urgent cleaning time when runing out of free sections.
 	 */
-	if (update_inode_page(inode))
+	if (update_inode_page(inode) && wbc && wbc->nr_to_write)
 		f2fs_balance_fs(sbi, true);
 	return 0;
 }
@@ -376,6 +377,9 @@ void f2fs_evict_inode(struct inode *inode)
 		goto no_delete;
 #endif
 
+	remove_ino_entry(sbi, inode->i_ino, APPEND_INO);
+	remove_ino_entry(sbi, inode->i_ino, UPDATE_INO);
+
 	set_inode_flag(inode, FI_NO_ALLOC);
 	i_size_write(inode, 0);
 retry:
@@ -406,10 +410,12 @@ no_delete:
 	invalidate_mapping_pages(NODE_MAPPING(sbi), inode->i_ino, inode->i_ino);
 	if (xnid)
 		invalidate_mapping_pages(NODE_MAPPING(sbi), xnid, xnid);
-	if (is_inode_flag_set(inode, FI_APPEND_WRITE))
-		add_ino_entry(sbi, inode->i_ino, APPEND_INO);
-	if (is_inode_flag_set(inode, FI_UPDATE_WRITE))
-		add_ino_entry(sbi, inode->i_ino, UPDATE_INO);
+	if (inode->i_nlink) {
+		if (is_inode_flag_set(inode, FI_APPEND_WRITE))
+			add_ino_entry(sbi, inode->i_ino, APPEND_INO);
+		if (is_inode_flag_set(inode, FI_UPDATE_WRITE))
+			add_ino_entry(sbi, inode->i_ino, UPDATE_INO);
+	}
 	if (is_inode_flag_set(inode, FI_FREE_NID)) {
 		alloc_nid_failed(sbi, inode->i_ino);
 		clear_inode_flag(inode, FI_FREE_NID);
