@@ -2,7 +2,7 @@ VERSION_NUMBER=3.0
 build()
 {
 	echo "Copying toolchain..."
-	cp -r ../tc/* android-toolchain
+	cp -r ../alucard24/android-toolchain/* android-toolchain
 	
 	#Build pure zImage
 	export CROSS_COMPILE=android-toolchain/bin/arm-eabi-
