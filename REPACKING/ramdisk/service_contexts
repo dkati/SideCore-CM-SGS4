@@ -149,7 +149,7 @@ wifiscanner                               u:object_r:wifiscanner_service:s0
 wifi                                      u:object_r:wifi_service:s0
 window                                    u:object_r:window_service:s0
 *                                         u:object_r:default_android_service:s0
-#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optlos/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "device/qcom/sepolicy/common/service_contexts"
 # Copyright (c) 2015-2016 Dolby Laboratories, Inc. All rights reserved.
@@ -214,7 +214,7 @@ wigig                                          u:object_r:wigig_service:s0
 media.dolby_memoryservice                      u:object_r:audioserver_service:s0
 # DOLBY_END
 enrichrcsservice                               u:object_r:radio_service:s0
-#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optlos/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "device/qcom/sepolicy/test/service_contexts"
 # Copyright (c) 2015, The Linux Foundation. All rights reserved.
@@ -247,7 +247,7 @@ enrichrcsservice                               u:object_r:radio_service:s0
 com.qualcomm.qti.auth.securesampleauthdaemon   u:object_r:fidotest_service:s0
 com.qualcomm.qti.qseeproxysample               u:object_r:qseeproxysample_service:s0
 
-#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optlos/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
 #line 1 "vendor/cm/sepolicy/service_contexts"
 edgegestureservice                        u:object_r:edge_gesture_service:s0
@@ -261,5 +261,5 @@ cmperformance                             u:object_r:cm_performance_service:s0
 cmweather                                 u:object_r:cm_weather_service:s0
 cmlivedisplay                             u:object_r:cm_livedisplay_service:s0               
 cmaudio                                   u:object_r:cm_audio_service:s0
-#line 1 "/home/side/android/optcm14/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
+#line 1 "/home/side/android/optlos/out/target/product/jflte/obj/ETC/sectxfile_nl_intermediates/sectxfile_nl"
 
